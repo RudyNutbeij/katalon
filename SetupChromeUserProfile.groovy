@@ -29,7 +29,9 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 
+// om de tijdelijke chrome profielen te verwijderen
 import org.apache.commons.io.FileUtils
+
 
 class ChromeProfielTestSuite {
 	/**
@@ -38,8 +40,8 @@ class ChromeProfielTestSuite {
 	 */
 	@BeforeTestSuite
 	def createTmpChromeUserProfile(TestSuiteContext testSuiteContext) {
-		// creates new user profiles for each test suite
-		// useful for parallel testing
+		// maakt tijdelijkse user profiles aan voor Chrome per test suite
+		// cleaned achter gebleven user profiles evt voor initialisatie
 		def chromeDriverPath =  DriverFactory.getChromeDriverPath();
 		System.setProperty("webdriver.chrome.driver", chromeDriverPath.toString())
 		
@@ -48,19 +50,17 @@ class ChromeProfielTestSuite {
 		def tmpChromeProfilePath = new File(tmpPath, testSuiteId);
 
 		File tmpChromeUserProfile = new File(tmpChromeProfilePath, 'User Data');
+		String chromeProfilePath = tmpChromeUserProfile.getCanonicalPath();
+
 		tmpChromeUserProfile.mkdirs()
 		FileUtils.cleanDirectory(tmpChromeUserProfile);
-		
-		def chromePath = DriverFactory.getChromeDriverPath();
-		String chromeProfilePath = tmpChromeUserProfile.getCanonicalPath();
 		
 		ChromeOptions chromeProfile = new ChromeOptions();
 		chromeProfile.addArguments("--user-data-dir=${chromeProfilePath}");
 		chromeProfile.addArguments("--incognito");
 		chromeProfile.addArguments("--no-first-run");
-
-		
 		WebDriver driver = new ChromeDriver(chromeProfile);
+		
 		DriverFactory.changeWebDriver(driver)
 	}
 
