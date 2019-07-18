@@ -45,7 +45,6 @@ class ChromeProfielTestSuite {
 		def chromeDriverPath =  DriverFactory.getChromeDriverPath();
 		System.setProperty("webdriver.chrome.driver", chromeDriverPath.toString())
 		
-		def testSuiteId = testSuiteContext.getTestSuiteId();
 		def tmpPath = new File(System.getProperty("java.io.tmpdir")); 
 		def tmpChromeProfilePath = new File(tmpPath, testSuiteId);
 
@@ -59,6 +58,8 @@ class ChromeProfielTestSuite {
 		chromeProfile.addArguments("--user-data-dir=${chromeProfilePath}");
 		chromeProfile.addArguments("--incognito");
 		chromeProfile.addArguments("--no-first-run");
+		chromeProfile.addArguments("--disable-infobars");
+		
 		WebDriver driver = new ChromeDriver(chromeProfile);
 		
 		DriverFactory.changeWebDriver(driver)
@@ -69,7 +70,7 @@ class ChromeProfielTestSuite {
 		try {
 			WebUI.maximizeWindow()
 		} catch(BrowserNotOpenedException) {
-			WebUI.openBrowser('')
+			WebUI.openBrowser('www.topicus.nl')
 			WebUI.maximizeWindow()
 		}
 
